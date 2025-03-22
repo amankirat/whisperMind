@@ -1,23 +1,10 @@
 import React, { useState, useRef, useEffect } from 'react';
 import {
-  Box,
-  Container,
   Flex,
-  Input,
   IconButton,
   Text,
-  VStack,
-  HStack,
   useToast,
-  Button,
-  Heading,
   useBreakpointValue,
-  Drawer,
-  DrawerBody,
-  DrawerHeader,
-  DrawerOverlay,
-  DrawerContent,
-  DrawerCloseButton,
   useDisclosure,
 } from '@chakra-ui/react';
 import { HamburgerIcon, EditIcon } from '@chakra-ui/icons';
