@@ -22,7 +22,7 @@ import {
 } from '@chakra-ui/react';
 import { HamburgerIcon, EditIcon } from '@chakra-ui/icons';
 import { BsThreeDots } from 'react-icons/bs';
-import { FiPlus, FiSearch, FiShare, FiExternalLink, FiMenu } from 'react-icons/fi';
+import { FiPlus, FiSend, FiShare, FiExternalLink, FiMenu } from 'react-icons/fi';
 import { BiMicrophone, BiStop } from 'react-icons/bi';
 
 const Chat = () => {
@@ -439,22 +439,32 @@ const Chat = () => {
                   icon={isListening ? <BiStop /> : <BiMicrophone />}
                   variant="ghost"
                   colorScheme={isListening ? "red" : "whiteAlpha"}
-                  size="sm"
+                  size="md"
                   onClick={toggleListening}
-                  _hover={{ bg: 'whiteAlpha.100' }}
+                  _hover={{ 
+                    bg: isListening ? "red.500" : "whiteAlpha.200",
+                    transform: "scale(1.02)",
+                    transition: "all 0.2s"
+                  }}
                   aria-label={isListening ? "Stop recording" : "Start recording"}
                   disabled={isLoading}
+                  color={isListening ? "red.500" : "whiteAlpha.700"}
                 />
                 <IconButton
-                  icon={<FiSearch />}
+                  icon={<FiSend />}
                   variant="ghost"
                   colorScheme="whiteAlpha"
-                  size="sm"
+                  size="md"
                   isLoading={isLoading}
                   onClick={handleSend}
-                  _hover={{ bg: 'whiteAlpha.100' }}
+                  _hover={{ 
+                    bg: "whiteAlpha.200",
+                    transform: "scale(1.02)",
+                    transition: "all 0.2s"
+                  }}
                   aria-label="Send message"
                   disabled={!inputMessage.trim() && !isListening}
+                  color={inputMessage.trim() || isListening ? "whiteAlpha.900" : "whiteAlpha.400"}
                 />
               </HStack>
             </Flex>
