@@ -1,70 +1,130 @@
-# Getting Started with Create React App
+# WhisperMind
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+WhisperMind is a modern chat interface that combines voice recognition with LLaMA's powerful language model capabilities. It features a sleek, ChatGPT-like interface with voice-to-text functionality and real-time AI responses.
 
-## Available Scripts
+## Features
 
-In the project directory, you can run:
+- 🎙️ Voice-to-text input with automatic speech recognition
+- 💬 Real-time chat interface
+- 🤖 Powered by LLaMA 3.2B Instruct model
+- 🎨 Modern, responsive UI
+- ⚡ Fast local AI responses
 
-### `npm start`
+## Prerequisites
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+- Node.js (v16 or higher)
+- npm (Node Package Manager)
+- LM Studio (for running the LLaMA model)
+- At least 8GB RAM recommended
+- Modern web browser with speech recognition support (Chrome recommended)
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## Setup Instructions
 
-### `npm test`
+### 1. Setting up LM Studio
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+1. Download and install LM Studio from [https://lmstudio.ai/](https://lmstudio.ai/)
+2. Launch LM Studio
+3. Go to the "Models" tab
+4. Search for "llama-3.2-3b-instruct"
+5. Download the model by clicking the download button
+6. Once downloaded, go to the "Local Server" tab
+7. Select "llama-3.2-3b-instruct" from the model dropdown
+8. Click "Start Server"
+   - The server will start on http://localhost:80
+   - Make sure port 80 is available
 
-### `npm run build`
+### 2. Setting up the WhisperMind Application
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+1. Clone the repository:
+   ```bash
+   git clone <repository-url>
+   cd llamagpt
+   ```
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+2. Install dependencies:
+   ```bash
+   npm install
+   # If you encounter any errors, try:
+   npm install --legacy-peer-deps
+   ```
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+3. Install additional required packages:
+   ```bash
+   npm install @chakra-ui/react@2.8.0 @emotion/react@^11 @emotion/styled@^11 framer-motion@^6 react-icons --legacy-peer-deps
+   ```
 
-### `npm run eject`
+4. Start the development server:
+   ```bash
+   npm start
+   ```
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+5. Open your browser and navigate to:
+   ```
+   http://localhost:3000
+   ```
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+## Usage
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+1. **Starting a New Chat**
+   - Click the "New chat" button in the sidebar to start a fresh conversation
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+2. **Text Input**
+   - Type your message in the input field
+   - Press Enter or click the send button to submit
 
-## Learn More
+3. **Voice Input**
+   - Click the microphone icon to start voice recording
+   - Speak your message
+   - Recording will automatically stop when you pause speaking
+   - The message will be sent automatically
+   - Click the stop button (red microphone) to manually stop recording
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+4. **Viewing Responses**
+   - AI responses appear in the chat with an "L" avatar
+   - Your messages appear with a "U" avatar
+   - Scroll through the conversation history
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+## Troubleshooting
 
-### Code Splitting
+1. **LM Studio Issues**
+   - Ensure the LM Studio server is running on port 80
+   - Check if the model is properly loaded in LM Studio
+   - Verify the server status in LM Studio's "Local Server" tab
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+2. **Application Issues**
+   - Clear your browser cache and reload
+   - Check browser console for any errors
+   - Ensure all dependencies are properly installed
+   - Try reinstalling node_modules if you encounter compilation errors:
+     ```bash
+     rm -rf node_modules package-lock.json
+     npm install --legacy-peer-deps
+     ```
 
-### Analyzing the Bundle Size
+3. **Speech Recognition Issues**
+   - Ensure you're using a supported browser (Chrome recommended)
+   - Grant microphone permissions when prompted
+   - Check if your microphone is properly connected and working
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+## Technical Details
 
-### Making a Progressive Web App
+- Frontend: React with Chakra UI
+- Speech Recognition: Web Speech API
+- AI Model: LLaMA 3.2B Instruct
+- API Endpoint: http://localhost:80/v1/chat/completions
+- Node Version: 16+ recommended
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+## Browser Support
 
-### Advanced Configuration
+- Google Chrome (recommended)
+- Microsoft Edge
+- Safari
+- Firefox (limited speech recognition support)
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+## Contributing
 
-### Deployment
+Feel free to submit issues and enhancement requests!
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+## License
 
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+[Add your license here]
