@@ -248,37 +248,6 @@ const Chat = () => {
       >
         New chat
       </Button>
-      
-      <VStack spacing={2} align="stretch" flex={1} overflowY="auto">
-        {['Previous Chat 1', 'Previous Chat 2', 'Previous Chat 3'].map((chat, index) => (
-          <Button
-            key={index}
-            variant="ghost"
-            colorScheme="whiteAlpha"
-            justifyContent="flex-start"
-            px={4}
-            py={2}
-            _hover={{ bg: 'whiteAlpha.100' }}
-            color="white"
-          >
-            {chat}
-          </Button>
-        ))}
-      </VStack>
-
-      <Box p={4} borderTop="1px" borderColor="whiteAlpha.200">
-        <Button
-          leftIcon={<EditIcon />}
-          variant="outline"
-          colorScheme="whiteAlpha"
-          width="full"
-          borderColor="whiteAlpha.200"
-          _hover={{ bg: 'whiteAlpha.100' }}
-          color="white"
-        >
-          Upgrade plan
-        </Button>
-      </Box>
     </VStack>
   );
 
