@@ -24,6 +24,9 @@ import { HamburgerIcon, EditIcon } from '@chakra-ui/icons';
 import { BsThreeDots } from 'react-icons/bs';
 import { FiPlus, FiSend, FiShare, FiExternalLink, FiMenu } from 'react-icons/fi';
 import { BiMicrophone, BiStop } from 'react-icons/bi';
+import Sidebar from './chat/Sidebar';
+import MessageList from './chat/MessageList';
+import InputArea from './chat/InputArea';
 
 const Chat = () => {
   const [messages, setMessages] = useState([]);
@@ -37,7 +40,6 @@ const Chat = () => {
 
   const { isOpen, onOpen, onClose } = useDisclosure();
   const isMobile = useBreakpointValue({ base: true, md: false });
-  const sidebarWidth = useBreakpointValue({ base: 'full', md: '260px' });
   const containerMaxW = useBreakpointValue({ base: 'full', md: 'container.md', lg: 'container.lg' });
   const messagePadding = useBreakpointValue({ base: 4, md: 6 });
   const inputPadding = useBreakpointValue({ base: 3, md: 4 });
@@ -233,43 +235,14 @@ const Chat = () => {
     }
   };
 
-  const SidebarContent = () => (
-    <VStack spacing={4} align="stretch" h="full">
-      <Button
-        leftIcon={<FiPlus />}
-        variant="outline"
-        colorScheme="whiteAlpha"
-        w="full"
-        justifyContent="flex-start"
-        borderColor="whiteAlpha.200"
-        onClick={handleNewChat}
-        _hover={{ bg: 'whiteAlpha.100' }}
-        h="44px"
-      >
-        New chat
-      </Button>
-    </VStack>
-  );
-
   return (
     <Flex h="100vh">
-      {/* Sidebar */}
-      {isMobile ? (
-        <Drawer isOpen={isOpen} placement="left" onClose={onClose}>
-          <DrawerOverlay />
-          <DrawerContent bg="#202123">
-            <DrawerCloseButton color="white" />
-            <DrawerHeader color="white">Chat History</DrawerHeader>
-            <DrawerBody p={0}>
-              <SidebarContent />
-            </DrawerBody>
-          </DrawerContent>
-        </Drawer>
-      ) : (
-        <Box w={sidebarWidth} bg="#202123" p={4} borderRight="1px solid" borderColor="whiteAlpha.200">
-          <SidebarContent />
-        </Box>
-      )}
+      <Sidebar
+        isMobile={isMobile}
+        isOpen={isOpen}
+        onClose={onClose}
+        onNewChat={handleNewChat}
+      />
 
       {/* Main Chat Area */}
       <Flex flex={1} direction="column" bg="#343541" position="relative">
@@ -304,152 +277,23 @@ const Chat = () => {
           />
         </Flex>
 
-        {/* Messages Area */}
-        <Box flex={1} overflowY="auto">
-          {messages.length === 0 ? (
-            <Flex
-              direction="column"
-              align="center"
-              justify="center"
-              h="full"
-              color="white"
-              px={4}
-            >
-              <Heading size="xl" fontWeight="medium">
-                What can I help with?
-              </Heading>
-            </Flex>
-          ) : (
-            messages.map((msg, idx) => (
-              <Flex
-                key={idx}
-                bg={msg.role === 'assistant' ? '#444654' : '#343541'}
-                w="full"
-                py={messagePadding}
-                borderBottom="1px solid"
-                borderColor="whiteAlpha.200"
-              >
-                <Container maxW={containerMaxW}>
-                  <HStack align="flex-start" spacing={6}>
-                    <Box
-                      w="30px"
-                      h="30px"
-                      borderRadius="sm"
-                      bg={msg.role === 'assistant' ? 'brand.500' : 'white'}
-                      display="flex"
-                      alignItems="center"
-                      justifyContent="center"
-                      fontSize="sm"
-                      fontWeight="bold"
-                      color={msg.role === 'assistant' ? 'white' : 'black'}
-                    >
-                      {msg.role === 'assistant' ? 'L' : 'U'}
-                    </Box>
-                    <Box flex={1}>
-                      <Text color="white" whiteSpace="pre-wrap">
-                        {msg.content}
-                      </Text>
-                      {msg.role === 'assistant' && (
-                        <HStack spacing={2} mt={4}>
-                          <IconButton
-                            icon={<BsThreeDots />}
-                            variant="ghost"
-                            colorScheme="whiteAlpha"
-                            size="sm"
-                            aria-label="More options"
-                          />
-                        </HStack>
-                      )}
-                    </Box>
-                  </HStack>
-                </Container>
-              </Flex>
-            ))
-          )}
-          <div ref={messagesEndRef} />
-        </Box>
+        <MessageList
+          messages={messages}
+          containerMaxW={containerMaxW}
+          messagePadding={messagePadding}
+          messagesEndRef={messagesEndRef}
+        />
 
-        {/* Input Area */}
-        <Box p={inputPadding} borderTop="1px solid" borderColor="whiteAlpha.200" bg="#343541" position="sticky" bottom={0}>
-          <Container maxW={containerMaxW} position="relative">
-            <Flex position="relative">
-              <Input
-                value={inputMessage}
-                onChange={(e) => setInputMessage(e.target.value)}
-                onKeyDown={(e) => e.key === 'Enter' && !e.shiftKey && handleSend()}
-                placeholder="Type or speak..."
-                bg="#40414f"
-                border="1px solid"
-                borderColor="whiteAlpha.200"
-                borderRadius="xl"
-                _focus={{
-                  boxShadow: 'none',
-                  borderColor: 'whiteAlpha.400',
-                }}
-                _hover={{
-                  borderColor: 'whiteAlpha.400',
-                }}
-                color="white"
-                pr="90px"
-                pl="16px"
-                minH="44px"
-                fontSize="16px"
-                disabled={isLoading}
-              />
-              <HStack 
-                position="absolute" 
-                right={3} 
-                top="50%" 
-                transform="translateY(-50%)" 
-                spacing={3}
-                zIndex={2}
-              >
-                <IconButton
-                  icon={isListening ? <BiStop /> : <BiMicrophone />}
-                  variant="ghost"
-                  colorScheme={isListening ? "red" : "whiteAlpha"}
-                  size="md"
-                  onClick={toggleListening}
-                  _hover={{ 
-                    bg: isListening ? "red.500" : "whiteAlpha.200",
-                    transform: "scale(1.02)",
-                    transition: "all 0.2s"
-                  }}
-                  aria-label={isListening ? "Stop recording" : "Start recording"}
-                  disabled={isLoading}
-                  color={isListening ? "red.500" : "whiteAlpha.700"}
-                />
-                <IconButton
-                  icon={<FiSend />}
-                  variant="ghost"
-                  colorScheme="whiteAlpha"
-                  size="md"
-                  isLoading={isLoading}
-                  onClick={handleSend}
-                  _hover={{ 
-                    bg: "whiteAlpha.200",
-                    transform: "scale(1.02)",
-                    transition: "all 0.2s"
-                  }}
-                  aria-label="Send message"
-                  disabled={!inputMessage.trim() && !isListening}
-                  color={inputMessage.trim() || isListening ? "whiteAlpha.900" : "whiteAlpha.400"}
-                />
-              </HStack>
-            </Flex>
-            <Text
-              position="absolute"
-              bottom="-24px"
-              left={0}
-              right={0}
-              textAlign="center"
-              color="gray.500"
-              fontSize="12px"
-            >
-              WhisperMind can make mistakes. Check important info.
-            </Text>
-          </Container>
-        </Box>
+        <InputArea
+          inputMessage={inputMessage}
+          setInputMessage={setInputMessage}
+          handleSend={handleSend}
+          isLoading={isLoading}
+          isListening={isListening}
+          toggleListening={toggleListening}
+          containerMaxW={containerMaxW}
+          inputPadding={inputPadding}
+        />
       </Flex>
     </Flex>
   );
