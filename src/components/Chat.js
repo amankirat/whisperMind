@@ -11,10 +11,18 @@ import {
   useToast,
   Button,
   Heading,
+  useBreakpointValue,
+  Drawer,
+  DrawerBody,
+  DrawerHeader,
+  DrawerOverlay,
+  DrawerContent,
+  DrawerCloseButton,
+  useDisclosure,
 } from '@chakra-ui/react';
 import { HamburgerIcon, EditIcon } from '@chakra-ui/icons';
 import { BsThreeDots } from 'react-icons/bs';
-import { FiPlus, FiSearch, FiShare, FiExternalLink } from 'react-icons/fi';
+import { FiPlus, FiSearch, FiShare, FiExternalLink, FiMenu } from 'react-icons/fi';
 import { BiMicrophone, BiStop } from 'react-icons/bi';
 
 const Chat = () => {
@@ -26,6 +34,13 @@ const Chat = () => {
   const toast = useToast();
   const recognitionRef = useRef(null);
   const [transcriptBuffer, setTranscriptBuffer] = useState('');
+
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const isMobile = useBreakpointValue({ base: true, md: false });
+  const sidebarWidth = useBreakpointValue({ base: 'full', md: '260px' });
+  const containerMaxW = useBreakpointValue({ base: 'full', md: 'container.md', lg: 'container.lg' });
+  const messagePadding = useBreakpointValue({ base: 4, md: 6 });
+  const inputPadding = useBreakpointValue({ base: 3, md: 4 });
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -218,26 +233,74 @@ const Chat = () => {
     }
   };
 
+  const SidebarContent = () => (
+    <VStack spacing={4} align="stretch" h="full">
+      <Button
+        leftIcon={<FiPlus />}
+        variant="outline"
+        colorScheme="whiteAlpha"
+        w="full"
+        justifyContent="flex-start"
+        borderColor="whiteAlpha.200"
+        onClick={handleNewChat}
+        _hover={{ bg: 'whiteAlpha.100' }}
+        h="44px"
+      >
+        New chat
+      </Button>
+      
+      <VStack spacing={2} align="stretch" flex={1} overflowY="auto">
+        {['Previous Chat 1', 'Previous Chat 2', 'Previous Chat 3'].map((chat, index) => (
+          <Button
+            key={index}
+            variant="ghost"
+            colorScheme="whiteAlpha"
+            justifyContent="flex-start"
+            px={4}
+            py={2}
+            _hover={{ bg: 'whiteAlpha.100' }}
+            color="white"
+          >
+            {chat}
+          </Button>
+        ))}
+      </VStack>
+
+      <Box p={4} borderTop="1px" borderColor="whiteAlpha.200">
+        <Button
+          leftIcon={<EditIcon />}
+          variant="outline"
+          colorScheme="whiteAlpha"
+          width="full"
+          borderColor="whiteAlpha.200"
+          _hover={{ bg: 'whiteAlpha.100' }}
+          color="white"
+        >
+          Upgrade plan
+        </Button>
+      </Box>
+    </VStack>
+  );
+
   return (
     <Flex h="100vh">
       {/* Sidebar */}
-      <Box w="260px" bg="#202123" p={4} borderRight="1px solid" borderColor="whiteAlpha.200">
-        <VStack spacing={4} align="stretch" h="full">
-          <Button
-            leftIcon={<FiPlus />}
-            variant="outline"
-            colorScheme="whiteAlpha"
-            w="full"
-            justifyContent="flex-start"
-            borderColor="whiteAlpha.200"
-            onClick={handleNewChat}
-            _hover={{ bg: 'whiteAlpha.100' }}
-            h="44px"
-          >
-            New chat
-          </Button>
-        </VStack>
-      </Box>
+      {isMobile ? (
+        <Drawer isOpen={isOpen} placement="left" onClose={onClose}>
+          <DrawerOverlay />
+          <DrawerContent bg="#202123">
+            <DrawerCloseButton color="white" />
+            <DrawerHeader color="white">Chat History</DrawerHeader>
+            <DrawerBody p={0}>
+              <SidebarContent />
+            </DrawerBody>
+          </DrawerContent>
+        </Drawer>
+      ) : (
+        <Box w={sidebarWidth} bg="#202123" p={4} borderRight="1px solid" borderColor="whiteAlpha.200">
+          <SidebarContent />
+        </Box>
+      )}
 
       {/* Main Chat Area */}
       <Flex flex={1} direction="column" bg="#343541" position="relative">
@@ -252,23 +315,24 @@ const Chat = () => {
           justify="space-between"
           bg="#343541"
         >
-          <HStack spacing={2}>
-            {/* <IconButton
-              icon={<HamburgerIcon />}
+          {isMobile && (
+            <IconButton
+              icon={<FiMenu />}
               variant="ghost"
               colorScheme="whiteAlpha"
-              size="sm"
-              aria-label="Menu"
-            /> */}
-            <Text color="white" fontSize="16px">WhisperMind</Text>
-            {/* <IconButton
-              icon={<EditIcon />}
-              variant="ghost"
-              colorScheme="whiteAlpha"
-              size="sm"
-              aria-label="Edit"
-            /> */}
-          </HStack>
+              onClick={onOpen}
+              mr={2}
+              _hover={{ bg: 'whiteAlpha.100' }}
+            />
+          )}
+          <Text color="white" fontSize="16px">WhisperMind</Text>
+          <IconButton
+            icon={<EditIcon />}
+            variant="ghost"
+            colorScheme="whiteAlpha"
+            aria-label="Edit chat"
+            _hover={{ bg: 'whiteAlpha.100' }}
+          />
         </Flex>
 
         {/* Messages Area */}
@@ -292,11 +356,11 @@ const Chat = () => {
                 key={idx}
                 bg={msg.role === 'assistant' ? '#444654' : '#343541'}
                 w="full"
-                py={6}
+                py={messagePadding}
                 borderBottom="1px solid"
                 borderColor="whiteAlpha.200"
               >
-                <Container maxW="container.md">
+                <Container maxW={containerMaxW}>
                   <HStack align="flex-start" spacing={6}>
                     <Box
                       w="30px"
@@ -337,8 +401,8 @@ const Chat = () => {
         </Box>
 
         {/* Input Area */}
-        <Box p={4} borderTop="1px solid" borderColor="whiteAlpha.200" bg="#343541" position="sticky" bottom={0}>
-          <Container maxW="48rem" position="relative">
+        <Box p={inputPadding} borderTop="1px solid" borderColor="whiteAlpha.200" bg="#343541" position="sticky" bottom={0}>
+          <Container maxW={containerMaxW} position="relative">
             <Flex position="relative">
               <Input
                 value={inputMessage}
